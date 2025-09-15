@@ -44,6 +44,8 @@ class StableDiffusionProcessing:
         upscale_by,
         uniform_tile_mode,
         tiled_decode,
+        decode_temporal_size,
+        decode_temporal_overlap,
         tile_width,
         tile_height,
         redraw_mode,
@@ -85,6 +87,8 @@ class StableDiffusionProcessing:
         self.upscale_by = upscale_by
         self.uniform_tile_mode = uniform_tile_mode
         self.tiled_decode = tiled_decode
+        self.decode_temporal_size = decode_temporal_size
+        self.decode_temporal_overlap = decode_temporal_overlap
         self.vae_decoder = VAEDecode()
         self.vae_encoder = VAEEncode()
         self.vae_decoder_tiled = VAEDecodeTiled()
@@ -238,7 +242,7 @@ def process_images(p: StableDiffusionProcessing) -> Processed:
     if not p.tiled_decode:
         (decoded,) = p.vae_decoder.decode(p.vae, samples)
     else:
-        (decoded,) = p.vae_decoder_tiled.decode(p.vae, samples, 512)  # Default tile size is 512
+        (decoded,) = p.vae_decoder_tiled.decode(p.vae, samples, 512, 64, p.decode_temporal_size, p.decode_temporal_overlap)  # Default tile size is 512
 
     # Convert the sample to a PIL image
     tiles_sampled = [tensor_to_pil(decoded, i) for i in range(len(decoded))]

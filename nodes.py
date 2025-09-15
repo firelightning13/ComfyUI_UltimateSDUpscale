@@ -56,6 +56,8 @@ def USDU_base_inputs():
         # Misc
         ("force_uniform_tiles", ("BOOLEAN", {"default": True})),
         ("tiled_decode", ("BOOLEAN", {"default": False})),
+        ("decode_temporal_size", ("INT", {"default": 64, "min": 8, "max": 4096, "step": 4})),
+        ("decode_temporal_overlap", ("INT", {"default": 8, "min": 4, "max": 4096, "step": 4})),
     ]
 
     optional = []
@@ -104,7 +106,8 @@ class UltimateSDUpscale:
                 steps, cfg, sampler_name, scheduler, denoise, upscale_model,
                 mode_type, tile_width, tile_height, mask_blur, tile_padding,
                 seam_fix_mode, seam_fix_denoise, seam_fix_mask_blur,
-                seam_fix_width, seam_fix_padding, force_uniform_tiles, tiled_decode, 
+                seam_fix_width, seam_fix_padding, force_uniform_tiles, tiled_decode,
+                decode_temporal_size, decode_temporal_overlap, 
                 custom_sampler=None, custom_sigmas=None):
         # Store params
         self.tile_width = tile_width
@@ -138,6 +141,7 @@ class UltimateSDUpscale:
             shared.batch[0], model, positive, negative, vae,
             seed, steps, cfg, sampler_name, scheduler, denoise, upscale_by, force_uniform_tiles, tiled_decode,
             tile_width, tile_height, MODES[self.mode_type], SEAM_FIX_MODES[self.seam_fix_mode],
+            decode_temporal_size, decode_temporal_overlap,
             custom_sampler, custom_sigmas,
         )
 
@@ -183,13 +187,15 @@ class UltimateSDUpscaleNoUpscale(UltimateSDUpscale):
                 steps, cfg, sampler_name, scheduler, denoise,
                 mode_type, tile_width, tile_height, mask_blur, tile_padding,
                 seam_fix_mode, seam_fix_denoise, seam_fix_mask_blur,
-                seam_fix_width, seam_fix_padding, force_uniform_tiles, tiled_decode):
+                seam_fix_width, seam_fix_padding, force_uniform_tiles, tiled_decode,
+                decode_temporal_size, decode_temporal_overlap):
         upscale_by = 1.0
         return super().upscale(upscaled_image, model, positive, negative, vae, upscale_by, seed,
                                steps, cfg, sampler_name, scheduler, denoise, None,
                                mode_type, tile_width, tile_height, mask_blur, tile_padding,
                                seam_fix_mode, seam_fix_denoise, seam_fix_mask_blur,
-                               seam_fix_width, seam_fix_padding, force_uniform_tiles, tiled_decode)
+                               seam_fix_width, seam_fix_padding, force_uniform_tiles, tiled_decode,
+                               decode_temporal_size, decode_temporal_overlap)
     
 class UltimateSDUpscaleCustomSample(UltimateSDUpscale):
     @classmethod
@@ -210,6 +216,7 @@ class UltimateSDUpscaleCustomSample(UltimateSDUpscale):
                 mode_type, tile_width, tile_height, mask_blur, tile_padding,
                 seam_fix_mode, seam_fix_denoise, seam_fix_mask_blur,
                 seam_fix_width, seam_fix_padding, force_uniform_tiles, tiled_decode,
+                decode_temporal_size, decode_temporal_overlap,
                 upscale_model=None,
                 custom_sampler=None, custom_sigmas=None):
         return super().upscale(image, model, positive, negative, vae, upscale_by, seed,
@@ -217,7 +224,7 @@ class UltimateSDUpscaleCustomSample(UltimateSDUpscale):
                 mode_type, tile_width, tile_height, mask_blur, tile_padding,
                 seam_fix_mode, seam_fix_denoise, seam_fix_mask_blur,
                 seam_fix_width, seam_fix_padding, force_uniform_tiles, tiled_decode,
-                custom_sampler, custom_sigmas)
+                decode_temporal_size, decode_temporal_overlap, custom_sampler, custom_sigmas)
 
 
 # A dictionary that contains all nodes you want to export with their names
