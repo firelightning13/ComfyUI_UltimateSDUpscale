@@ -140,8 +140,8 @@ class UltimateSDUpscale:
         sdprocessing = StableDiffusionProcessing(
             shared.batch[0], model, positive, negative, vae,
             seed, steps, cfg, sampler_name, scheduler, denoise, upscale_by, force_uniform_tiles, tiled_decode,
-            tile_width, tile_height, MODES[self.mode_type], SEAM_FIX_MODES[self.seam_fix_mode],
             decode_temporal_size, decode_temporal_overlap,
+            tile_width, tile_height, MODES[self.mode_type], SEAM_FIX_MODES[self.seam_fix_mode],
             custom_sampler, custom_sigmas,
         )
 
